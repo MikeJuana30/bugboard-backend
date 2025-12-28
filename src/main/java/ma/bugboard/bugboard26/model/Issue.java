@@ -28,6 +28,7 @@ public class Issue {
     private String type;
     private String priority;
     private String status;
+    private String assignee;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now(); // Imposta la data di oggi in automatico

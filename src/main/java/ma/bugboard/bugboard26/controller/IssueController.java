@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/issues")
+@CrossOrigin(origins = "*")
 public class IssueController {
 
     @Autowired
@@ -51,4 +52,19 @@ public class IssueController {
             return ResponseEntity.ok(issueRepository.save(issue));
         }).orElse(ResponseEntity.notFound().build());
     }
+
+    // 3. Per MODIFICARE un bug esistente (PUT)
+    @PutMapping("/{id}")
+    public ResponseEntity<Issue> updateIssue(@PathVariable Long id, @RequestBody Issue updatedIssue) {
+        return issueRepository.findById(id).map(issue -> {
+            issue.setTitle(updatedIssue.getTitle());           // Aggiorna titolo
+            issue.setDescription(updatedIssue.getDescription()); // Aggiorna descrizione
+            issue.setType(updatedIssue.getType());             // Aggiorna tipo
+            issue.setPriority(updatedIssue.getPriority());
+            issue.setStatus(updatedIssue.getStatus());
+            issue.setAssignee(updatedIssue.getAssignee());
+            return ResponseEntity.ok(issueRepository.save(issue)); // Salva nel DB
+        }).orElse(ResponseEntity.notFound().build());
+    }
+
 }

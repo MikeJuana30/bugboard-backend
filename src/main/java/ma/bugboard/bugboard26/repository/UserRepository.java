@@ -5,9 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    // Cerca un utente tramite email (fondamentale per il login)
+    // Tieni SOLO questa riga (cancella le altre versioni duplicate)
     Optional<User> findByEmail(String email);
 
-    // Controlla se un'email esiste già (utile per il futuro)
     boolean existsByEmail(String email);
 }
