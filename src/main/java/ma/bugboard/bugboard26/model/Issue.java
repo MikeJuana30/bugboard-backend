@@ -4,12 +4,16 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp; // Import fondamentale per la data automatica
+import org.hibernate.annotations.CreationTimestamp;
+import com.fasterxml.jackson.annotation.JsonIgnore; // Importante per evitare il loop
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "issues")
-@Data // Genera in automatico Getter, Setter, toString, ecc.
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Issue {
@@ -21,29 +25,24 @@ public class Issue {
     @Column(nullable = false)
     private String title;
 
-    @Column(columnDefinition = "TEXT") // Per descrizioni lunghe
+    @Column(columnDefinition = "TEXT")
     private String description;
 
-    // Tipo: BUG, FEATURE
     private String type;
-
-    // Priorità: LOW, MEDIUM, HIGH
     private String priority;
-
-    // Stato: OPEN, IN_PROGRESS, DONE
     private String status;
-
-    // Nome dell'assegnatario (es. "Mario Rossi")
     private String assignee;
 
-    // --- GESTIONE DATA AUTOMATICA ---
-    @CreationTimestamp        // Hibernate inserirà la data esatta di salvataggio
-    @Column(updatable = false) // La data di creazione non deve cambiare mai
+    @CreationTimestamp
+    @Column(updatable = false)
     private LocalDateTime createdAt;
-    // --------------------------------
 
-    // RELAZIONE: Molte Issue possono essere create da un solo User (Reporter)
     @ManyToOne
     @JoinColumn(name = "reporter_id", nullable = false)
     private User reporter;
+
+    // --- RELAZIONE COMMENTI (Corretta) ---
+    @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore // Blocca il loop infinito
+    private List<Comment> comments = new ArrayList<>();
 }
