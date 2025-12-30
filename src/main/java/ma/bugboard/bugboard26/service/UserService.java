@@ -2,27 +2,26 @@ package ma.bugboard.bugboard26.service;
 
 import ma.bugboard.bugboard26.model.User;
 import ma.bugboard.bugboard26.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
-@Service // Dice a Spring: "Questa è la logica di business"
+@Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository; // Iniettiamo il repository (il magazzino)
+    private final UserRepository userRepository;
 
-    // Metodo per creare un utente
+    // COSTRUTTORE MANUALE: Sostituisce Lombok e risolve l'errore rosso nell'IDE
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     public User createUser(User user) {
-        // Controllo logico: l'email esiste già?
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("Email già in uso!");
         }
-        // Se è tutto ok, salva nel database
         return userRepository.save(user);
     }
 
-    // Metodo per leggere tutti gli utenti
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }

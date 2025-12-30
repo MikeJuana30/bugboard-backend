@@ -2,6 +2,8 @@ package ma.bugboard.bugboard26.config;
 
 import ma.bugboard.bugboard26.model.User;
 import ma.bugboard.bugboard26.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,13 +11,16 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class DataInitializer {
 
+    // Logger manuale: Sostituisce l'annotazione @Slf4j di Lombok
+    private static final Logger log = LoggerFactory.getLogger(DataInitializer.class);
+
     @Bean
     CommandLineRunner initAdmin(UserRepository userRepository) {
         return args -> {
-            System.out.println("🔍 [STARTUP] Controllo presenza Admin...");
+            log.info("🔍 [STARTUP] Controllo presenza Admin...");
 
             if (userRepository.findByEmail("admin@bugboard.com").isEmpty()) {
-                System.out.println("⚠️ Admin non trovato. Inizio creazione...");
+                log.info("⚠️ Admin non trovato. Inizio creazione...");
 
                 try {
                     User admin = new User();
@@ -25,13 +30,13 @@ public class DataInitializer {
                     admin.setRole("ADMIN");
 
                     userRepository.save(admin);
-                    System.out.println("✅ [SUCCESSO] UTENTE ADMIN CREATO CORRETTAMENTE!");
+                    log.info("✅ [SUCCESSO] UTENTE ADMIN CREATO CORRETTAMENTE!");
                 } catch (Exception e) {
-                    System.err.println("❌ [ERRORE] Impossibile creare l'admin: " + e.getMessage());
-                    e.printStackTrace();
+                    // Gestione errore sicura (già corretta per SonarQube)
+                    log.error("❌ [ERRORE] Impossibile creare l'admin: ", e);
                 }
             } else {
-                System.out.println("ℹ️ [INFO] L'utente Admin esiste già nel database.");
+                log.info("ℹ️ [INFO] L'utente Admin esiste già nel database.");
             }
         };
     }

@@ -6,7 +6,6 @@ import ma.bugboard.bugboard26.model.User;
 import ma.bugboard.bugboard26.repository.CommentRepository;
 import ma.bugboard.bugboard26.repository.IssueRepository;
 import ma.bugboard.bugboard26.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,17 +13,21 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/comments")
-@CrossOrigin(origins = "*") // Permette al sito di comunicare con noi
+@CrossOrigin(origins = "http://localhost:63342")
 public class CommentController {
 
-    @Autowired
-    private CommentRepository commentRepository;
+    private final CommentRepository commentRepository;
+    private final IssueRepository issueRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private IssueRepository issueRepository;
-
-    @Autowired
-    private UserRepository userRepository;
+    // COSTRUTTORE MANUALE: Sostituisce @RequiredArgsConstructor e permette a Spring di funzionare senza Lombok
+    public CommentController(CommentRepository commentRepository,
+                             IssueRepository issueRepository,
+                             UserRepository userRepository) {
+        this.commentRepository = commentRepository;
+        this.issueRepository = issueRepository;
+        this.userRepository = userRepository;
+    }
 
     // 1. GET: Scarica i commenti di un ticket
     @GetMapping("/issue/{issueId}")
@@ -33,27 +36,18 @@ public class CommentController {
     }
 
     // 2. POST: Aggiungi un commento nuovo
-    // 2. POST: Aggiungi un nuovo commento
     @PostMapping
     public ResponseEntity<?> addComment(
             @RequestParam Long issueId,
             @RequestParam Long authorId,
             @RequestBody Comment commentData) {
 
-        // 1. Controllo se il Ticket esiste
-        if (!issueRepository.existsById(issueId)) {
-            return ResponseEntity.badRequest().body("Ticket non trovato");
-        }
+        // Recupero gli oggetti in modo sicuro
+        Issue issue = issueRepository.findById(issueId)
+                .orElseThrow(() -> new RuntimeException("Ticket con ID " + issueId + " non trovato"));
 
-        // 2. Controllo se l'Autore esiste
-        if (!userRepository.existsById(authorId)) {
-            return ResponseEntity.badRequest().body("Autore non trovato");
-        }
-
-        // Recupero gli oggetti veri dal database
-        // (Uso .get() perché sono sicuro che esistono grazie ai controlli sopra)
-        Issue issue = issueRepository.findById(issueId).get();
-        User author = userRepository.findById(authorId).get();
+        User author = userRepository.findById(authorId)
+                .orElseThrow(() -> new RuntimeException("Autore con ID " + authorId + " non trovato"));
 
         // 3. Creo e salvo il commento
         Comment newComment = new Comment();

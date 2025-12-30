@@ -1,16 +1,10 @@
 package ma.bugboard.bugboard26.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "audit_logs")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class AuditLog {
 
     @Id
@@ -26,4 +20,58 @@ public class AuditLog {
     private String payload; // Dettagli della modifica (JSON o testo)
 
     private LocalDateTime timestamp = LocalDateTime.now();
+
+    // 1. Costruttore senza argomenti (necessario per JPA)
+    public AuditLog() {
+    }
+
+    // 2. Costruttore completo
+    public AuditLog(Long id, String action, Long entityId, String payload, LocalDateTime timestamp) {
+        this.id = id;
+        this.action = action;
+        this.entityId = entityId;
+        this.payload = payload;
+        this.timestamp = timestamp;
+    }
+
+    // 3. Getter e Setter
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public Long getEntityId() {
+        return entityId;
+    }
+
+    public void setEntityId(Long entityId) {
+        this.entityId = entityId;
+    }
+
+    public String getPayload() {
+        return payload;
+    }
+
+    public void setPayload(String payload) {
+        this.payload = payload;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
 }
