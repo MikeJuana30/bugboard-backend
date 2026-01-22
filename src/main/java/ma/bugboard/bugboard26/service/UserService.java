@@ -1,12 +1,11 @@
 package ma.bugboard.bugboard26.service;
 
-
 import ma.bugboard.bugboard26.model.User;
 import ma.bugboard.bugboard26.repository.UserRepository;
 import ma.bugboard.bugboard26.utils.Validation;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -18,16 +17,20 @@ public class UserService {
     }
 
     public User createUser(User user) {
-        // Validazione credenziali (Email e Password)
+        // Esegue il controllo su email e password (min 6 car.)
         Validation.isValidEmailAndPassword(user.getEmail(), user.getPassword());
 
         if (userRepository.existsByEmail(user.getEmail())) {
-            throw new RuntimeException("Email already exists");
+            throw new IllegalArgumentException("Email già esistente!");
         }
         return userRepository.save(user);
     }
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 }
