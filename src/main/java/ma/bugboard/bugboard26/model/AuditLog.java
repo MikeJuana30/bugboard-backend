@@ -14,18 +14,17 @@ public class AuditLog {
     private String action; // Es. "CREATE_ISSUE", "UPDATE_STATUS"
 
     @Column(name = "entity_id")
-    private Long entityId; // L'ID della Issue modificata
+    private Long entityId;
 
     @Column(columnDefinition = "TEXT")
     private String payload; // Dettagli della modifica (JSON o testo)
 
     private LocalDateTime timestamp = LocalDateTime.now();
 
-    // 1. Costruttore senza argomenti
+
     public AuditLog() {
     }
 
-    // 2. Costruttore completo
     public AuditLog(Long id, String action, Long entityId, String payload, LocalDateTime timestamp) {
         this.id = id;
         this.action = action;
@@ -34,7 +33,7 @@ public class AuditLog {
         this.timestamp = timestamp;
     }
 
-    // 3. Getter e Setter
+
     public Long getId() {
         return id;
     }
