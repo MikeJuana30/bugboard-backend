@@ -34,7 +34,6 @@ public class IssueService {
         return saved;
     }
 
-    // Archiviazione riservata agli ADMIN
     public Issue archiveIssue(Long id, String userRole) {
         if (!"ADMIN".equals(userRole)) {
             throw new IllegalArgumentException("Permesso negato: solo l'amministratore può archiviare.");
@@ -44,6 +43,7 @@ public class IssueService {
         auditLogService.logAction("ARCHIVE", id, "Archived by Admin");
         return issueRepository.save(issue);
     }
+
     public Issue updateIssue(Long id, Issue updatedIssue) {
         Issue issue = issueRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Issue not found"));
@@ -57,7 +57,6 @@ public class IssueService {
         return issueRepository.save(issue);
     }
 
-    // Ripristino
     public Issue restoreIssue(Long id, String userRole) {
         if (!"ADMIN".equals(userRole)) {
             throw new IllegalArgumentException("Permesso negato: solo l'amministratore può ripristinare.");
@@ -73,6 +72,9 @@ public class IssueService {
     }
 
     public void deleteIssue(Long id) {
+        if (!issueRepository.existsById(id)) {
+            throw new RuntimeException("Issue not found with id: " + id);
+        }
         issueRepository.deleteById(id);
     }
 }

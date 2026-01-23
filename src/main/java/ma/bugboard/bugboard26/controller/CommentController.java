@@ -13,14 +13,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/comments")
-@CrossOrigin(origins = "http://localhost:63342")
+@CrossOrigin(origins = "*")
 public class CommentController {
 
     private final CommentRepository commentRepository;
     private final IssueRepository issueRepository;
     private final UserRepository userRepository;
 
-    // COSTRUTTORE MANUALE
     public CommentController(CommentRepository commentRepository,
                              IssueRepository issueRepository,
                              UserRepository userRepository) {
@@ -29,27 +28,23 @@ public class CommentController {
         this.userRepository = userRepository;
     }
 
-    // Scarica i commenti di un ticket
     @GetMapping("/issue/{issueId}")
     public List<Comment> getCommentsByIssue(@PathVariable Long issueId) {
         return commentRepository.findByIssueIdOrderByCreatedAtAsc(issueId);
     }
 
-    //POST: Aggiungi un commento nuovo
     @PostMapping
     public ResponseEntity<?> addComment(
             @RequestParam Long issueId,
             @RequestParam Long authorId,
             @RequestBody Comment commentData) {
 
-        // Recupero gli oggetti in modo sicuro
         Issue issue = issueRepository.findById(issueId)
                 .orElseThrow(() -> new RuntimeException("Ticket con ID " + issueId + " non trovato"));
 
         User author = userRepository.findById(authorId)
                 .orElseThrow(() -> new RuntimeException("Autore con ID " + authorId + " non trovato"));
 
-        // Creo e salvo il commento
         Comment newComment = new Comment();
         newComment.setText(commentData.getText());
         newComment.setIssue(issue);
