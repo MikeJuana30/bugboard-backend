@@ -29,7 +29,7 @@ public class AuthController {
             return ResponseEntity.status(401).body("Email o Password errati!");
         }
 
-        // Login OK!
+        // Login effettuato correttamente
         return ResponseEntity.ok(user);
     }
 }
