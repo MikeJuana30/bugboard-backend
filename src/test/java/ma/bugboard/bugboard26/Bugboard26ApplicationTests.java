@@ -100,11 +100,11 @@ class SimpleTest {
 		issue.setTitle("Coverage80"); issue.setDescription("Deep");
 		issue.setPriority("HIGH"); issue.setType("BUG");
 
-		// Corretto: ID nel path invece di query param
+
 		ResponseEntity<Issue> iResp = restTemplate.postForEntity("/api/issues/" + userId, issue, Issue.class);
 		Long issueId = iResp.getBody().getId();
 
-		// Corretto: URL /archive e aggiunta header obbligatorio
+
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("X-User-Role", "ADMIN");
 		HttpEntity<Void> entity = new HttpEntity<>(headers);
