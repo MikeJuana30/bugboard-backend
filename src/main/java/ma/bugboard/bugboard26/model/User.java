@@ -20,11 +20,11 @@ public class User {
 
     private String role;
 
-    //  Costruttore senza argomenti
+
     public User() {
     }
 
-    // Costruttore completo
+
     public User(Long id, String email, String password, String name, String role) {
         this.id = id;
         this.email = email;
@@ -33,7 +33,7 @@ public class User {
         this.role = role;
     }
 
-    //  Getter e Setter manuali
+
     public Long getId() {
         return id;
     }

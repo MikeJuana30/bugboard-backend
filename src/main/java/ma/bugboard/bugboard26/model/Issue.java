@@ -43,11 +43,11 @@ public class Issue {
     @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
 
-    //  Costruttore senza argomenti
+
     public Issue() {
     }
 
-    // Costruttore completo
+
     @SuppressWarnings("all")
     public Issue(Long id, String title, String description, String imageBase64, String type,
                  String priority, String status, String assignee, LocalDateTime createdAt,
@@ -65,7 +65,7 @@ public class Issue {
         this.comments = comments;
     }
 
-    // Getter e Setter
+
     public Long getId() {
         return id;
     }
